@@ -215,12 +215,12 @@ function ProductsPage() {
       <ProductDialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)} product={editing ?? undefined} />
       {stockTarget && <StockDialog
         open={!!stockTarget}
-        onOpenChange={(o) => !o && setStockTarget(null)}
+        onOpenChange={(o: boolean) => !o && setStockTarget(null)}
         product={stockTarget.product}
         action={stockTarget.action}
       />}
 
-      <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
+      <AlertDialog open={!!toDelete} onOpenChange={(o: boolean) => !o && setToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("confirm_delete")}</AlertDialogTitle>
