@@ -148,6 +148,19 @@ function ProductsPage() {
         </div>
       </div>
 
+      {lowOnly && (
+        <div className="flex items-center justify-between gap-3 rounded-md border border-warning/40 bg-warning/10 px-4 py-2.5 text-sm">
+          <div className="flex items-center gap-2 text-warning">
+            <AlertTriangle className="h-4 w-4" />
+            <span className="font-medium">Showing low stock only</span>
+          </div>
+          <Button size="sm" variant="ghost" onClick={() => navigate({ to: "/products", search: {} })}>
+            <X className="h-4 w-4 me-1" /> Clear
+          </Button>
+        </div>
+      )}
+
+
       <Card>
         <CardContent className="p-4 space-y-4">
           <div className="grid gap-3 sm:grid-cols-4">
