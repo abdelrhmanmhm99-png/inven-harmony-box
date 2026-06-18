@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowUpDown, FileSpreadsheet, Download, Upload, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowUpDown, Download, Upload, ArrowDownToLine, ArrowUpFromLine, AlertTriangle, X } from "lucide-react";
 import { ProductDialog } from "@/components/product-dialog";
 import { StockDialog } from "@/components/stock-dialog";
 import { toast } from "sonner";
@@ -19,7 +19,10 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/_authenticated/products")({ component: ProductsPage });
+export const Route = createFileRoute("/_authenticated/products")({
+  component: ProductsPage,
+  validateSearch: (s: Record<string, unknown>) => ({ low: s.low === "1" || s.low === 1 || s.low === true ? 1 : undefined }),
+});
 
 type Product = {
   id: string; product_id: string; name: string; category: string | null;
