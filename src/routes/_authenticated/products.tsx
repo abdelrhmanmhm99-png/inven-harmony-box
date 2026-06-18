@@ -210,7 +210,6 @@ function ProductsPage() {
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
                       <TableCell className="text-end">
                         <span className={`font-mono ${low ? "text-warning font-semibold" : ""}`}>{p.stock_quantity}</span>
-                        {low && <span className="ms-1 text-[10px] uppercase tracking-wide text-warning">low</span>}
                       </TableCell>
                       <TableCell className="text-end">
                         <div className="flex justify-end gap-1">
