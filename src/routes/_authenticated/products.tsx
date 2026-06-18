@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowUpDown, FileSpreadsheet, Download, Upload, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowUpDown, Download, Upload, ArrowDownToLine, ArrowUpFromLine, AlertTriangle, X } from "lucide-react";
 import { ProductDialog } from "@/components/product-dialog";
 import { StockDialog } from "@/components/stock-dialog";
 import { toast } from "sonner";
@@ -19,7 +19,10 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/_authenticated/products")({ component: ProductsPage });
+export const Route = createFileRoute("/_authenticated/products")({
+  component: ProductsPage,
+  validateSearch: (s: Record<string, unknown>) => ({ low: s.low === "1" || s.low === 1 || s.low === true ? 1 : undefined }),
+});
 
 type Product = {
   id: string; product_id: string; name: string; category: string | null;
@@ -33,6 +36,9 @@ function ProductsPage() {
   const { data: role } = useRole(user?.id);
   const isAdmin = role?.isAdmin ?? false;
   const qc = useQueryClient();
+  const navigate = useNavigate();
+  const { low } = Route.useSearch();
+  const lowOnly = low === 1;
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("__all");
   const [supplier, setSupplier] = useState<string>("__all");
@@ -59,6 +65,7 @@ function ProductsPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let r = products.filter((p) => {
+      if (lowOnly && p.stock_quantity > p.min_stock_level) return false;
       if (category !== "__all" && p.category !== category) return false;
       if (supplier !== "__all" && p.supplier !== supplier) return false;
       if (q && ![p.name, p.product_id, p.category, p.supplier].some((v) => v?.toLowerCase().includes(q))) return false;
@@ -71,7 +78,7 @@ function ProductsPage() {
       return sortDir === "asc" ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
     });
     return r;
-  }, [products, search, category, supplier, sortKey, sortDir]);
+  }, [products, search, category, supplier, sortKey, sortDir, lowOnly]);
 
   const del = useMutation({
     mutationFn: async (id: string) => {
@@ -140,6 +147,19 @@ function ProductsPage() {
           )}
         </div>
       </div>
+
+      {lowOnly && (
+        <div className="flex items-center justify-between gap-3 rounded-md border border-warning/40 bg-warning/10 px-4 py-2.5 text-sm">
+          <div className="flex items-center gap-2 text-warning">
+            <AlertTriangle className="h-4 w-4" />
+            <span className="font-medium">Showing low stock only</span>
+          </div>
+          <Button size="sm" variant="ghost" onClick={() => navigate({ to: "/products", search: {} })}>
+            <X className="h-4 w-4 me-1" /> Clear
+          </Button>
+        </div>
+      )}
+
 
       <Card>
         <CardContent className="p-4 space-y-4">

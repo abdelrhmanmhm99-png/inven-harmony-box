@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/lib/i18n";
@@ -61,7 +61,9 @@ function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Package} label={t("total_products")} value={totalProducts} />
         <StatCard icon={Boxes} label={t("total_stock")} value={totalStock} />
-        <StatCard icon={AlertTriangle} label={t("low_stock")} value={lowStock.length} tone={lowStock.length ? "warn" : "ok"} />
+        <Link to="/products" search={{ low: 1 }} className="block rounded-lg focus:outline-none focus:ring-2 focus:ring-ring">
+          <StatCard icon={AlertTriangle} label={t("low_stock")} value={lowStock.length} tone={lowStock.length ? "warn" : "ok"} />
+        </Link>
         <StatCard icon={DollarSign} label={t("inventory_value")} value={invValue.toLocaleString(lang === "ar" ? "ar-EG" : "en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })} />
       </div>
 
