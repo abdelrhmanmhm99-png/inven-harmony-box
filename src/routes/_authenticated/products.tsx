@@ -185,16 +185,16 @@ function ProductsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TH onClick={() => sortBy("product_id")}>{t("product_id")}</TH>
                   <TH onClick={() => sortBy("name")}>{t("name")}</TH>
                   <TH onClick={() => sortBy("category")}>{t("category")}</TH>
+                  <TH onClick={() => sortBy("product_id")}>{t("product_id")}</TH>
                   <TH onClick={() => sortBy("supplier")}>{t("supplier")}</TH>
                   <TH onClick={() => sortBy("unit_price")} className="text-end">{t("unit_price")}</TH>
                   <TH onClick={() => sortBy("stock_quantity")} className="text-end">{t("quantity")}</TH>
                   <TableHead className="text-end">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <TableBody className="divide-y divide-border">
                 {isLoading ? (
                   <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground">{t("loading")}</TableCell></TableRow>
                 ) : filtered.length === 0 ? (
@@ -202,10 +202,10 @@ function ProductsPage() {
                 ) : filtered.map((p) => {
                   const low = p.stock_quantity <= p.min_stock_level;
                   return (
-                    <TableRow key={p.id}>
-                      <TableCell className="font-mono text-xs">{p.product_id}</TableCell>
+                    <TableRow key={p.id} className="border-b last:border-b-0">
                       <TableCell className="font-medium">{p.name}</TableCell>
                       <TableCell>{p.category || "—"}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{p.product_id}</TableCell>
                       <TableCell>{p.supplier || "—"}</TableCell>
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
                       <TableCell className="text-end">
