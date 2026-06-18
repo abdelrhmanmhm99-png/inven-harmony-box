@@ -65,6 +65,7 @@ function ProductsPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     let r = products.filter((p) => {
+      if (lowOnly && p.stock_quantity > p.min_stock_level) return false;
       if (category !== "__all" && p.category !== category) return false;
       if (supplier !== "__all" && p.supplier !== supplier) return false;
       if (q && ![p.name, p.product_id, p.category, p.supplier].some((v) => v?.toLowerCase().includes(q))) return false;
