@@ -78,7 +78,7 @@ function ProductsPage() {
       return sortDir === "asc" ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
     });
     return r;
-  }, [products, search, category, supplier, sortKey, sortDir]);
+  }, [products, search, category, supplier, sortKey, sortDir, lowOnly]);
 
   const del = useMutation({
     mutationFn: async (id: string) => {
