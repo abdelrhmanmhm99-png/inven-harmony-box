@@ -1,0 +1,1 @@
+- [Supabase WebSocket SSR fix](supabase-ws-ssr.md) — Node.js 20 lacks native WebSocket; Supabase Realtime throws during SSR unless `ws` is polyfilled globally before any client call.

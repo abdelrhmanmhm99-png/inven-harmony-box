@@ -11,6 +11,12 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Disable auto code splitting to prevent React 19 hydration mismatches:
+    // when components are split into lazy chunks, the server outputs a <Suspense> shell
+    // but the client renders the real component, causing a mismatch.
+    tsr: {
+      autoCodeSplitting: false,
+    },
   },
   vite: {
     server: {

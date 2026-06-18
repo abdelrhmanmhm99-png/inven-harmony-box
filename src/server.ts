@@ -1,5 +1,12 @@
 import "./lib/error-capture";
 
+// Polyfill WebSocket for Node.js < 22 — required by Supabase Realtime during SSR.
+// Must run before any Supabase client is created.
+import { WebSocket as NodeWebSocket } from "ws";
+if (typeof globalThis.WebSocket === "undefined") {
+  (globalThis as unknown as Record<string, unknown>).WebSocket = NodeWebSocket;
+}
+
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
