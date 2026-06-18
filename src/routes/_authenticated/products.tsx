@@ -204,7 +204,25 @@ function ProductsPage() {
                   return (
                     <TableRow key={p.id} className="border-b last:border-b-0">
                       <TableCell className="font-medium">{p.name}</TableCell>
-                      <TableCell>{p.category || "—"}</TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1 group/cat">
+                          <span>{p.category || "—"}</span>
+                          {isAdmin && p.category && (
+                            <button
+                              type="button"
+                              title="Clear category"
+                              className="opacity-0 group-hover/cat:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+                              onClick={async () => {
+                                const { error } = await supabase.from("products").update({ category: null }).eq("id", p.id);
+                                if (error) toast.error(error.message);
+                                else qc.invalidateQueries({ queryKey: ["products"] });
+                              }}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          )}
+                        </span>
+                      </TableCell>
                       <TableCell className="font-mono text-xs text-muted-foreground">{p.product_id}</TableCell>
                       <TableCell>{p.supplier || "—"}</TableCell>
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
