@@ -36,6 +36,9 @@ function ProductsPage() {
   const { data: role } = useRole(user?.id);
   const isAdmin = role?.isAdmin ?? false;
   const qc = useQueryClient();
+  const navigate = useNavigate();
+  const { low } = Route.useSearch();
+  const lowOnly = low === 1;
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("__all");
   const [supplier, setSupplier] = useState<string>("__all");
