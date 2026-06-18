@@ -182,7 +182,7 @@ function ProductsPage() {
           </div>
 
           <div className="overflow-x-auto rounded-md border">
-            <Table>
+            <Table className="[&_th:not(:last-child)]:border-r [&_td:not(:last-child)]:border-r [&_th]:border-border [&_td]:border-border">
               <TableHeader>
                 <TableRow>
                   <TH onClick={() => sortBy("name")}>{t("name")}</TH>
