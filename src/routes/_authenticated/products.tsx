@@ -223,7 +223,7 @@ function ProductsPage() {
                           )}
                         </span>
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-muted-foreground">{p.product_id}</TableCell>
+                      <TableCell className="font-mono font-medium">{p.product_id}</TableCell>
                       <TableCell>{p.supplier || "—"}</TableCell>
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
                       <TableCell className="text-end">
