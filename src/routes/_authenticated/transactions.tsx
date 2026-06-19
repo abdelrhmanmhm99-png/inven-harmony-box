@@ -76,7 +76,7 @@ function TxPage() {
           </div>
 
           <div className="overflow-x-auto rounded-md border">
-            <Table className="[&_th:not(:last-child)]:border-r [&_td:not(:last-child)]:border-r [&_th]:border-border [&_td]:border-border">
+            <Table className="[&_th:not(:last-child)]:border-r-2 [&_td:not(:last-child)]:border-r-2 [&_th]:border-border [&_td]:border-border">
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("date")}</TableHead>
