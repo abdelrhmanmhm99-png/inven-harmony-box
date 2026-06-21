@@ -60,7 +60,7 @@ export function ProductDialog({ open, onOpenChange, product }: { open: boolean; 
   });
 
   const field = (k: string, type = "text") => (
-    <Input type={type} value={form[k] ?? ""} onChange={(e) => setForm({ ...form, [k]: type === "number" ? e.target.value : e.target.value })} />
+    <Input type={type} value={form[k] ?? ""} onChange={(e) => setForm({ ...form, [k]: type === "number" ? (e.target.value === "" ? "" : Number(e.target.value)) : e.target.value })} />
   );
 
   return (

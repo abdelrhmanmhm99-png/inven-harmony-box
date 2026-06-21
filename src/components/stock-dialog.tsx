@@ -18,7 +18,8 @@ export function StockDialog({
   const qc = useQueryClient();
   const [qty, setQty] = useState<number>(1);
   const [notes, setNotes] = useState("");
-  const nextQuantity = action === "in" ? product.stock_quantity + qty : Math.max(0, product.stock_quantity - qty);
+  const currentStock = Number(product.stock_quantity) || 0;
+  const nextQuantity = action === "in" ? currentStock + qty : Math.max(0, currentStock - qty);
 
   const mut = useMutation({
     mutationFn: async () => {
@@ -50,7 +51,7 @@ export function StockDialog({
         <form onSubmit={(e) => { e.preventDefault(); mut.mutate(); }} className="space-y-3">
           <div className="space-y-1.5">
             <Label>{action === "in" ? "Quantity to add" : "Quantity to remove"}</Label>
-            <Input type="number" min={1} step={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} />
+            <Input type="number" min={1} step={1} value={qty} onChange={(e) => { const v = parseInt(e.target.value, 10); setQty(isNaN(v) || v < 1 ? 1 : v); }} />
             <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
               <span>Current: <strong className="font-mono text-foreground">{product.stock_quantity}</strong></span>
               <span className="text-end">After save: <strong className="font-mono text-foreground">{nextQuantity}</strong></span>
