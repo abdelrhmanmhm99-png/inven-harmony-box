@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Pencil, Trash2, ArrowUpDown, Download, Upload, ArrowDownToLine, ArrowUpFromLine, AlertTriangle, X } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowUpDown, Download, Upload, ArrowDownToLine, ArrowUpFromLine, AlertTriangle, X, Lock, LockOpen } from "lucide-react";
 import { ProductDialog } from "@/components/product-dialog";
 import { StockDialog } from "@/components/stock-dialog";
+import { BuyPriceGuard } from "@/components/buy-price-guard";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import { inventorySeed } from "@/data/inventory-seed";
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/products")({
 
 type Product = {
   id: string; product_id: string; name: string; category: string | null;
-  supplier: string | null; unit_price: number; stock_quantity: number;
+  supplier: string | null; unit_price: number; buy_price: number; stock_quantity: number;
   min_stock_level: number; notes: string | null;
 };
 
@@ -49,6 +50,8 @@ function ProductsPage() {
   const [creating, setCreating] = useState(false);
   const [stockTarget, setStockTarget] = useState<{ product: Product; action: "in" | "out" } | null>(null);
   const [toDelete, setToDelete] = useState<Product | null>(null);
+  const [buyPriceUnlocked, setBuyPriceUnlocked] = useState(false);
+  const [buyPriceGuardOpen, setBuyPriceGuardOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { data: products = [], isLoading } = useQuery({
@@ -219,6 +222,19 @@ function ProductsPage() {
                   <TH onClick={() => sortBy("product_id")}>{t("product_id")}</TH>
                   <TH onClick={() => sortBy("supplier")}>{t("supplier")}</TH>
                   <TH onClick={() => sortBy("unit_price")} className="text-end">{t("unit_price")}</TH>
+                  <TableHead className="text-end">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 font-medium hover:text-foreground"
+                      onClick={() => buyPriceUnlocked ? setBuyPriceUnlocked(false) : setBuyPriceGuardOpen(true)}
+                      title={buyPriceUnlocked ? "Lock buy prices" : "Unlock buy prices"}
+                    >
+                      Buy Price
+                      {buyPriceUnlocked
+                        ? <LockOpen className="h-3.5 w-3.5 text-success" />
+                        : <Lock className="h-3.5 w-3.5 text-muted-foreground" />}
+                    </button>
+                  </TableHead>
                   <TH onClick={() => sortBy("stock_quantity")} className="text-end">{t("quantity")}</TH>
                   <TableHead className="text-end">{t("actions")}</TableHead>
                 </TableRow>
@@ -255,6 +271,11 @@ function ProductsPage() {
                       <TableCell className="font-mono font-medium">{p.product_id}</TableCell>
                       <TableCell>{p.supplier || "—"}</TableCell>
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
+                      <TableCell className="text-end font-mono">
+                        {buyPriceUnlocked
+                          ? Number(p.buy_price ?? 0).toFixed(2)
+                          : <span className="text-muted-foreground tracking-widest select-none">••••</span>}
+                      </TableCell>
                       <TableCell className="text-end">
                         <span className={`font-mono ${low ? "text-warning font-semibold" : ""}`}>{p.stock_quantity}</span>
                       </TableCell>
@@ -277,6 +298,7 @@ function ProductsPage() {
         </CardContent>
       </Card>
 
+      <BuyPriceGuard open={buyPriceGuardOpen} onOpenChange={setBuyPriceGuardOpen} onUnlock={() => setBuyPriceUnlocked(true)} />
       <ProductDialog open={creating} onOpenChange={setCreating} />
       <ProductDialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)} product={editing ?? undefined} />
       {stockTarget && <StockDialog

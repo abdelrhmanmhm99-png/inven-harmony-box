@@ -12,11 +12,11 @@ import { toast } from "sonner";
 
 type Product = {
   id: string; product_id: string; name: string; category: string | null;
-  supplier: string | null; unit_price: number; stock_quantity: number;
+  supplier: string | null; unit_price: number; buy_price: number; stock_quantity: number;
   min_stock_level: number; notes: string | null;
 };
 
-const empty = { product_id: "", name: "", category: "", supplier: "", unit_price: 0, stock_quantity: 0, min_stock_level: 0, notes: "" };
+const empty = { product_id: "", name: "", category: "", supplier: "", unit_price: 0, buy_price: 0, stock_quantity: 0, min_stock_level: 0, notes: "" };
 
 export function ProductDialog({ open, onOpenChange, product }: { open: boolean; onOpenChange: (o: boolean) => void; product?: Product }) {
   const { t } = useI18n();
@@ -37,6 +37,7 @@ export function ProductDialog({ open, onOpenChange, product }: { open: boolean; 
         category: form.category || null,
         supplier: form.supplier || null,
         unit_price: Number(form.unit_price) || 0,
+        buy_price: Number(form.buy_price) || 0,
         stock_quantity: Number(form.stock_quantity) || 0,
         min_stock_level: Number(form.min_stock_level) || 0,
         notes: form.notes || null,
@@ -72,6 +73,7 @@ export function ProductDialog({ open, onOpenChange, product }: { open: boolean; 
           <div className="space-y-1.5"><Label>{t("category")}</Label>{field("category")}</div>
           <div className="space-y-1.5"><Label>{t("supplier")}</Label>{field("supplier")}</div>
           <div className="space-y-1.5"><Label>{t("unit_price")}</Label>{field("unit_price", "number")}</div>
+          <div className="space-y-1.5"><Label>Buy Price</Label>{field("buy_price", "number")}</div>
           <div className="space-y-1.5"><Label>{t("quantity")}</Label>{field("stock_quantity", "number")}</div>
           <div className="space-y-1.5"><Label>{t("min_stock")}</Label>{field("min_stock_level", "number")}</div>
           <div className="space-y-1.5 sm:col-span-2"><Label>{t("notes")}</Label>
