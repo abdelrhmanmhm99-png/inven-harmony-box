@@ -213,9 +213,9 @@ function ProductsPage() {
               </TableHeader>
               <TableBody className="divide-y divide-border">
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={8} className="text-center py-10 text-muted-foreground">{t("loading")}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={9} className="text-center py-10 text-muted-foreground">{t("loading")}</TableCell></TableRow>
                 ) : filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={8} className="text-center py-10 text-muted-foreground">{t("no_products")}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={9} className="text-center py-10 text-muted-foreground">{t("no_products")}</TableCell></TableRow>
                 ) : filtered.map((p) => {
                   const low = p.stock_quantity <= p.min_stock_level;
                   return (
