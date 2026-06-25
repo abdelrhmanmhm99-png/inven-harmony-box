@@ -31,24 +31,30 @@ export function ProductDialog({ open, onOpenChange, product }: { open: boolean; 
 
   const save = useMutation({
     mutationFn: async () => {
-      const payload = {
+      const base = {
         product_id: form.product_id.trim(),
         name: form.name.trim(),
         category: form.category || null,
         supplier: form.supplier || null,
         unit_price: Number(form.unit_price) || 0,
-        buy_price: Number(form.buy_price) || 0,
         stock_quantity: Number(form.stock_quantity) || 0,
         min_stock_level: Number(form.min_stock_level) || 0,
         notes: form.notes || null,
       };
-      if (product) {
-        const { error } = await supabase.from("products").update(payload).eq("id", product.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("products").insert({ ...payload, created_by: user?.id });
-        if (error) throw error;
+
+      const runQuery = async (payload: any) => {
+        if (product) {
+          return supabase.from("products").update(payload).eq("id", product.id);
+        } else {
+          return supabase.from("products").insert({ ...payload, created_by: user?.id });
+        }
+      };
+
+      let { error } = await runQuery({ ...base, buy_price: Number(form.buy_price) || 0 });
+      if (error?.message?.includes("buy_price")) {
+        ({ error } = await runQuery(base));
       }
+      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
