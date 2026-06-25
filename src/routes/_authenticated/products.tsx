@@ -193,6 +193,7 @@ function ProductsPage() {
                   <TH onClick={() => sortBy("product_id")}>{t("product_id")}</TH>
                   <TH onClick={() => sortBy("supplier")}>{t("supplier")}</TH>
                   <TH onClick={() => sortBy("unit_price")} className="text-end">{t("unit_price")}</TH>
+                  <TableHead className="text-end">Total Value</TableHead>
                   <TableHead className="text-end">
                     <button
                       type="button"
@@ -212,9 +213,9 @@ function ProductsPage() {
               </TableHeader>
               <TableBody className="divide-y divide-border">
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground">{t("loading")}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-10 text-muted-foreground">{t("loading")}</TableCell></TableRow>
                 ) : filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground">{t("no_products")}</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-10 text-muted-foreground">{t("no_products")}</TableCell></TableRow>
                 ) : filtered.map((p) => {
                   const low = p.stock_quantity <= p.min_stock_level;
                   return (
@@ -242,6 +243,9 @@ function ProductsPage() {
                       <TableCell className="font-mono font-medium">{p.product_id}</TableCell>
                       <TableCell>{p.supplier || "—"}</TableCell>
                       <TableCell className="text-end font-mono">{Number(p.unit_price).toFixed(2)}</TableCell>
+                      <TableCell className="text-end font-mono font-semibold">
+                        {(Number(p.stock_quantity) * Number(p.unit_price)).toFixed(2)}
+                      </TableCell>
                       <TableCell className="text-end font-mono">
                         {buyPriceUnlocked
                           ? Number(p.buy_price ?? 0).toFixed(2)
