@@ -15,8 +15,6 @@ import { StockDialog } from "@/components/stock-dialog";
 import { BuyPriceGuard } from "@/components/buy-price-guard";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
-import { inventorySeed } from "@/data/inventory-seed";
-import { inventorySeed2 } from "@/data/inventory-seed2";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -99,57 +97,6 @@ function ProductsPage() {
     else { setSortKey(key); setSortDir("asc"); }
   };
 
-  const [seeding, setSeeding] = useState(false);
-
-  const [seeding2, setSeeding2] = useState(false);
-
-  const loadSeedInventory = async () => {
-    setSeeding(true);
-    try {
-      const rows = inventorySeed.map((p) => ({
-        product_id: p.product_id,
-        name: p.name,
-        category: p.category,
-        stock_quantity: p.stock_quantity,
-        unit_price: 0,
-        min_stock_level: 10,
-        created_by: user?.id ?? null,
-      }));
-      const { error } = await supabase.from("products").upsert(rows, { onConflict: "product_id" });
-      if (error) throw error;
-      qc.invalidateQueries({ queryKey: ["products"] });
-      toast.success(`Loaded ${rows.length} products from El-Sabbah inventory`);
-    } catch (e: any) {
-      toast.error(e.message);
-    } finally {
-      setSeeding(false);
-    }
-  };
-
-  const loadSeedInventory2 = async () => {
-    setSeeding2(true);
-    try {
-      const rows = (inventorySeed2 as any[]).map((p) => ({
-        product_id: p.product_id,
-        name: p.name,
-        category: p.category ?? null,
-        stock_quantity: p.stock_quantity,
-        notes: p.notes ?? null,
-        unit_price: 0,
-        min_stock_level: 10,
-        created_by: user?.id ?? null,
-      }));
-      const { error } = await supabase.from("products").upsert(rows, { onConflict: "product_id" });
-      if (error) throw error;
-      qc.invalidateQueries({ queryKey: ["products"] });
-      toast.success(`Loaded ${rows.length} products from Master Inventory`);
-    } catch (e: any) {
-      toast.error(e.message);
-    } finally {
-      setSeeding2(false);
-    }
-  };
-
   const exportExcel = () => {
     const rows = filtered.map((p) => ({
       "Product ID": p.product_id, Name: p.name, Category: p.category, Supplier: p.supplier,
@@ -198,12 +145,6 @@ function ProductsPage() {
             <>
               <input ref={fileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => e.target.files?.[0] && handleImport(e.target.files[0])} />
               <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload className="h-4 w-4 me-2" />{t("import_excel")}</Button>
-              <Button variant="outline" onClick={loadSeedInventory} disabled={seeding}>
-                {seeding ? "Loading…" : "Load El-Sabbah Inventory (209)"}
-              </Button>
-              <Button variant="outline" onClick={loadSeedInventory2} disabled={seeding2}>
-                {seeding2 ? "Loading…" : "Load Master Inventory (131)"}
-              </Button>
               <Button onClick={() => setCreating(true)}><Plus className="h-4 w-4 me-2" />{t("add_product")}</Button>
             </>
           )}
