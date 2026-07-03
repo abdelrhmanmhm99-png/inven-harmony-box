@@ -29,7 +29,7 @@ const DICT: Dict = {
   stock_out: { en: "Stock out", ar: "إخراج مخزون" },
   search: { en: "Search products...", ar: "ابحث عن منتجات..." },
   all_categories: { en: "All categories", ar: "كل الفئات" },
-  all_suppliers: { en: "All الموردين", ar: "كل الموردين" },
+  all_suppliers: { en: "All suppliers", ar: "كل الموردين" },
   product_id: { en: "Product ID", ar: "رمز المنتج" },
   name: { en: "Name", ar: "الاسم" },
   category: { en: "Category", ar: "الفئة" },

@@ -157,7 +157,7 @@ function ProductsPage() {
             <AlertTriangle className="h-4 w-4" />
             <span className="font-medium">Showing low stock only</span>
           </div>
-          <Button size="sm" variant="ghost" onClick={() => navigate({ to: "/products", search: {} })}>
+          <Button size="sm" variant="ghost" onClick={() => navigate({ to: "/products", search: { low: undefined } })}>
             <X className="h-4 w-4 me-1" /> Clear
           </Button>
         </div>
