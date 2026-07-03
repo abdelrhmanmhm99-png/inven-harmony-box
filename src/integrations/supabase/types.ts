@@ -14,8 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
+          buy_price: number | null
           category: string | null
           created_at: string
           created_by: string | null
@@ -30,6 +49,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          buy_price?: number | null
           category?: string | null
           created_at?: string
           created_by?: string | null
@@ -44,6 +64,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          buy_price?: number | null
           category?: string | null
           created_at?: string
           created_by?: string | null
@@ -144,6 +165,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_stock_delta: {
+        Args: {
+          p_delta: number
+          p_product_id: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
